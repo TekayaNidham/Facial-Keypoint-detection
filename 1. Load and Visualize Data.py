@@ -32,18 +32,12 @@ print('Landmarks shape: ', key_pts.shape)
 print('First 4 key pts: {}'.format(key_pts[:4]))
 
 
-# In[4]:
 
 
 # print out some stats about the data
 print('Number of images: ', key_pts_frame.shape[0])
 
 
-# ## Look at some images
-# 
-# Below, is a function `show_keypoints` that takes in an image and keypoints and displays them.  As you look at this data, **note that these images are not all of the same size**, and neither are the faces! To eventually train a neural network on these images, we'll need to standardize their shape.
-
-# In[5]:
 
 
 def show_keypoints(image, key_pts):
@@ -52,7 +46,6 @@ def show_keypoints(image, key_pts):
     plt.scatter(key_pts[:, 0], key_pts[:, 1], s=20, marker='.', c='m')
 
 
-# In[12]:
 
 
 # Display a few different types of images by changing the index n
@@ -67,38 +60,14 @@ plt.figure(figsize=(5, 5))
 show_keypoints(mpimg.imread(os.path.join('/data/training/', image_name)), key_pts)
 plt.show()
 
-
-# ## Dataset class and Transformations
-# 
-# To prepare our data for training, we'll be using PyTorch's Dataset class. Much of this this code is a modified version of what can be found in the [PyTorch data loading tutorial](http://pytorch.org/tutorials/beginner/data_loading_tutorial.html).
-# 
-# #### Dataset class
-# 
-# ``torch.utils.data.Dataset`` is an abstract class representing a
-# dataset. This class will allow us to load batches of image/keypoint data, and uniformly apply transformations to our data, such as rescaling and normalizing images for training a neural network.
+ will allow us to load batches of image/keypoint data, and uniformly apply transformations to our data, such as rescaling and normalizing images for training a neural network.
 # 
 # 
 # Your custom dataset should inherit ``Dataset`` and override the following
 # methods:
 # 
 # -  ``__len__`` so that ``len(dataset)`` returns the size of the dataset.
-# -  ``__getitem__`` to support the indexing such that ``dataset[i]`` can
-#    be used to get the i-th sample of image/keypoint data.
-# 
-# Let's create a dataset class for our face keypoints dataset. We will
-# read the CSV file in ``__init__`` but leave the reading of images to
-# ``__getitem__``. This is memory efficient because all the images are not
-# stored in the memory at once but read as required.
-# 
-# A sample of our dataset will be a dictionary
-# ``{'image': image, 'keypoints': key_pts}``. Our dataset will take an
-# optional argument ``transform`` so that any required processing can be
-# applied on the sample. We will see the usefulness of ``transform`` in the
-# next section.
-# 
-
-# In[13]:
-
+# -  ``__getite
 
 from torch.utils.data import Dataset, DataLoader
 
@@ -178,33 +147,6 @@ for i in range(num_to_display):
     show_keypoints(sample['image'], sample['keypoints'])
 
 
-# ## Transforms
-# 
-# Now, the images above are not of the same size, and neural networks often expect images that are standardized; a fixed size, with a normalized range for color ranges and coordinates, and (for PyTorch) converted from numpy lists and arrays to Tensors.
-# 
-# Therefore, we will need to write some pre-processing code.
-# Let's create four transforms:
-# 
-# -  ``Normalize``: to convert a color image to grayscale values with a range of [0,1] and normalize the keypoints to be in a range of about [-1, 1]
-# -  ``Rescale``: to rescale an image to a desired size.
-# -  ``RandomCrop``: to crop an image randomly.
-# -  ``ToTensor``: to convert numpy images to torch images.
-# 
-# 
-# We will write them as callable classes instead of simple functions so
-# that parameters of the transform need not be passed everytime it's
-# called. For this, we just need to implement ``__call__`` method and 
-# (if we require parameters to be passed in), the ``__init__`` method. 
-# We can then use a transform like this:
-# 
-#     tx = Transform(params)
-#     transformed_sample = tx(sample)
-# 
-# Observe below how these transforms are generally applied to both the image and its keypoints.
-# 
-# 
-
-# In[16]:
 
 
 import torch
@@ -381,25 +323,3 @@ print('Number of images: ', len(transformed_dataset))
 for i in range(5):
     sample = transformed_dataset[i]
     print(i, sample['image'].size(), sample['keypoints'].size())
-
-
-# ## Data Iteration and Batching
-# 
-# Right now, we are iterating over this data using a ``for`` loop, but we are missing out on a lot of PyTorch's dataset capabilities, specifically the abilities to:
-# 
-# -  Batch the data
-# -  Shuffle the data
-# -  Load the data in parallel using ``multiprocessing`` workers.
-# 
-# ``torch.utils.data.DataLoader`` is an iterator which provides all these
-# features, and we'll see this in use in the *next* notebook, Notebook 2, when we load data in batches to train a neural network!
-# 
-# ---
-# 
-# 
-
-# ## Ready to Train!
-# 
-# Now that you've seen how to load and transform our data, you're ready to build a neural network to train on this data.
-# 
-# In the next notebook, you'll be tasked with creating a CNN for facial keypoint detection.
