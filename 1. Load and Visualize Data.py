@@ -1,47 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# # Facial Keypoint Detection
-#   
-# This project will be all about defining and training a convolutional neural network to perform facial keypoint detection, and using computer vision techniques to transform images of faces.  The first step in any challenge like this will be to load and visualize the data you'll be working with. 
-# 
-# Let's take a look at some examples of images and corresponding facial keypoints.
-# 
-# <img src='images/key_pts_example.png' width=50% height=50%/>
-# 
-# Facial keypoints (also called facial landmarks) are the small magenta dots shown on each of the faces in the image above. In each training and test image, there is a single face and **68 keypoints, with coordinates (x, y), for that face**.  These keypoints mark important areas of the face: the eyes, corners of the mouth, the nose, etc. These keypoints are relevant for a variety of tasks, such as face filters, emotion recognition, pose recognition, and so on. Here they are, numbered, and you can see that specific ranges of points match different portions of the face.
-# 
-# <img src='images/landmarks_numbered.jpg' width=30% height=30%/>
-# 
-# ---
-
-# ## Load and Visualize Data
-# 
-# The first step in working with any dataset is to become familiar with your data; you'll need to load in the images of faces and their keypoints and visualize them! This set of image data has been extracted from the [YouTube Faces Dataset](https://www.cs.tau.ac.il/~wolf/ytfaces/), which includes videos of people in YouTube videos. These videos have been fed through some processing steps and turned into sets of image frames containing one face and the associated keypoints.
-# 
-# #### Training and Testing Data
-# 
-# This facial keypoints dataset consists of 5770 color images. All of these images are separated into either a training or a test set of data.
-# 
-# * 3462 of these images are training images, for you to use as you create a model to predict keypoints.
-# * 2308 are test images, which will be used to test the accuracy of your model.
-# 
-# The information about the images and keypoints in this dataset are summarized in CSV files, which we can read in using `pandas`. Let's read the training CSV and get the annotations in an (N, 2) array where N is the number of keypoints and 2 is the dimension of the keypoint coordinates (x, y).
-# 
-# ---
-
-# First, before we do anything, we have to load in our image data. This data is stored in a zip file and in the below cell, we access it by it's URL and unzip the data in a `/data/` directory that is separate from the workspace home directory.
-
-# In[1]:
-
-
-# -- DO NOT CHANGE THIS CELL -- #
 get_ipython().system('mkdir /data')
 get_ipython().system('wget -P /data/ https://s3.amazonaws.com/video.udacity-data.com/topher/2018/May/5aea1b91_train-test-data/train-test-data.zip')
 get_ipython().system('unzip -n /data/train-test-data.zip -d /data')
 
 
-# In[2]:
 
 
 # import the required libraries
@@ -56,8 +18,6 @@ import cv2
 
 
 # Then, let's load in our training data and display some stats about that dat ato make sure it's been loaded in correctly!
-
-# In[3]:
 
 
 key_pts_frame = pd.read_csv('/data/training_frames_keypoints.csv')
